@@ -28,6 +28,8 @@ db.exec(`
     extension TEXT NOT NULL,
     downloads INTEGER NOT NULL DEFAULT 0,
     visits INTEGER NOT NULL DEFAULT 0,
+    supported_versions TEXT DEFAULT '',
+    minecraft_type TEXT DEFAULT '',
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 
@@ -47,6 +49,20 @@ if (!hasDownloads) {
 }
 if (!hasVisits) {
   db.exec("ALTER TABLE contents ADD COLUMN visits INTEGER NOT NULL DEFAULT 0;");
+}
+
+const hasSupportedVersions = tableInfo.some(
+  (col) => col.name === "supported_versions",
+);
+const hasMinecraftType = tableInfo.some((col) => col.name === "minecraft_type");
+
+if (!hasSupportedVersions) {
+  db.exec(
+    "ALTER TABLE contents ADD COLUMN supported_versions TEXT DEFAULT '';",
+  );
+}
+if (!hasMinecraftType) {
+  db.exec("ALTER TABLE contents ADD COLUMN minecraft_type TEXT DEFAULT '';");
 }
 
 db.exec(`
@@ -79,6 +95,8 @@ export interface ContentRow {
   extension: string;
   downloads: number;
   visits: number;
+  supported_versions: string;
+  minecraft_type: string;
   created_at: string;
 }
 
@@ -99,8 +117,8 @@ export function insertContent(
 ): void {
   db.prepare(
     `
-    INSERT INTO contents (id, title, description, category, file_path, thumbnail_path, file_size, extension, downloads, visits)
-    VALUES (@id, @title, @description, @category, @file_path, @thumbnail_path, @file_size, @extension, 0, 0)
+    INSERT INTO contents (id, title, description, category, file_path, thumbnail_path, file_size, extension, downloads, visits, supported_versions, minecraft_type)
+    VALUES (@id, @title, @description, @category, @file_path, @thumbnail_path, @file_size, @extension, 0, 0, @supported_versions, @minecraft_type)
   `,
   ).run({ ...content, downloads: 0, visits: 0 });
 }

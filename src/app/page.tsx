@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import MobileSidebarToggle from "@/components/MobileSidebarToggle";
 import {
   Download,
@@ -45,6 +46,7 @@ export default function PublicHomePage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     fetchData();
@@ -70,18 +72,8 @@ export default function PublicHomePage() {
     }
   };
 
-  const handleCardClick = async (id: string) => {
-    try {
-      const res = await fetch(`/api/contents/${id}`);
-      if (res.ok) {
-        const updatedContent = await res.json();
-        setContents((prev) =>
-          prev.map((c) => (c.id === id ? updatedContent : c)),
-        );
-      }
-    } catch (err) {
-      console.error("Failed to track view:", err);
-    }
+  const handleCardClick = (id: string) => {
+    router.push(`/content/${id}`);
   };
 
   const filtered = contents.filter((c) => {
@@ -268,7 +260,11 @@ export default function PublicHomePage() {
               <div
                 key={content.id}
                 className="v-card"
-                style={{ animationDelay: `${index * 0.05}s` }}
+                style={{
+                  animationDelay: `${index * 0.05}s`,
+                  cursor: "pointer",
+                }}
+                onClick={() => handleCardClick(content.id)}
               >
                 {content.thumbnail_path ? (
                   <img
