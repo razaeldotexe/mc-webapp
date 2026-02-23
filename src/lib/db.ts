@@ -60,6 +60,12 @@ db.exec(`
   INSERT OR IGNORE INTO settings (key, value) VALUES ('max_storage_bytes', '1099511627776');
 `);
 
+// Migration: fix old thumbnail paths from /uploads/thumbnails/ to /api/thumbnails/
+db.exec(`
+  UPDATE contents SET thumbnail_path = REPLACE(thumbnail_path, '/uploads/thumbnails/', '/api/thumbnails/')
+  WHERE thumbnail_path LIKE '/uploads/thumbnails/%';
+`);
+
 // --- Content helpers ---
 
 export interface ContentRow {
