@@ -40,7 +40,7 @@ export default function Sidebar() {
           <Box size={20} />
         </div>
         <div>
-          <div className="sidebar-title">MC Content</div>
+          <div className="sidebar-title">ELFox</div>
           <div className="sidebar-subtitle">Admin Panel</div>
         </div>
       </div>

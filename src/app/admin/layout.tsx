@@ -1,7 +1,7 @@
 import AdminLayoutClient from "@/components/AdminLayoutClient";
 
 export const metadata = {
-  title: "MC Content — Admin Dashboard",
+  title: "ELFox — Admin Dashboard",
   description: "Admin panel untuk mengelola konten Minecraft.",
 };
 

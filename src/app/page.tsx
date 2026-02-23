@@ -116,7 +116,7 @@ export default function PublicHomePage() {
             <Box size={20} />
           </div>
           <div>
-            <div className="v-sidebar-title">MC Content</div>
+            <div className="v-sidebar-title">ELFox</div>
             <div className="v-sidebar-subtitle">Download Portal</div>
           </div>
         </div>

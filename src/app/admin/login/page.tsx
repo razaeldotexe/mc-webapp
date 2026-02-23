@@ -52,7 +52,7 @@ function LoginForm() {
           <div className="login-logo">
             <Box size={28} />
           </div>
-          <h1 className="login-title">MC Content</h1>
+          <h1 className="login-title">ELFox</h1>
           <p className="login-subtitle">Masuk ke Admin Dashboard</p>
         </div>
 
