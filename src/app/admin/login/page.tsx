@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Box, Lock, User, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { Crown, Lock, User, AlertCircle, Eye, EyeOff } from "lucide-react";
 
 function LoginForm() {
   const router = useRouter();
@@ -50,7 +50,7 @@ function LoginForm() {
       <div className="login-card">
         <div className="login-header">
           <div className="login-logo">
-            <Box size={28} />
+            <Crown size={28} />
           </div>
           <h1 className="login-title">ELFox</h1>
           <p className="login-subtitle">Masuk ke Admin Dashboard</p>
@@ -132,7 +132,7 @@ export default function LoginPage() {
             style={{ textAlign: "center", padding: "60px" }}
           >
             <div className="login-logo" style={{ margin: "0 auto 16px" }}>
-              <Box size={28} />
+              <Crown size={28} />
             </div>
             <p style={{ color: "var(--text-muted)" }}>Memuat...</p>
           </div>

@@ -9,7 +9,7 @@ import {
   Download,
   Search,
   FileArchive,
-  Box,
+  Crown,
   FolderOpen,
   HardDrive,
   TrendingUp,
@@ -113,7 +113,7 @@ export default function PublicHomePage() {
       <aside className="v-sidebar">
         <div className="v-sidebar-header">
           <div className="v-sidebar-logo">
-            <Box size={20} />
+            <Crown size={20} />
           </div>
           <div>
             <div className="v-sidebar-title">ELFox</div>

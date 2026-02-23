@@ -7,7 +7,7 @@ import {
   Upload,
   FolderOpen,
   Settings,
-  Box,
+  Crown,
   Globe,
   LogOut,
 } from "lucide-react";
@@ -37,7 +37,7 @@ export default function Sidebar() {
     <aside className="sidebar">
       <div className="sidebar-header">
         <div className="sidebar-logo animate-pulse-glow">
-          <Box size={20} />
+          <Crown size={20} />
         </div>
         <div>
           <div className="sidebar-title">ELFox</div>

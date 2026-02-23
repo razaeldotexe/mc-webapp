@@ -1,4 +1,4 @@
-# ⛏️ MC-WebApp — Minecraft Content Manager
+# ⛏️ ELFox — Minecraft Content Platform
 
 <div align="center">
 
@@ -12,7 +12,7 @@ Built with **Next.js 16** · **React 19** · **TypeScript** · **SQLite**
 
 ## 📖 Overview
 
-MC-WebApp is a full-stack content management platform designed for Minecraft creators and communities. It provides a sleek, modern interface for uploading, organizing, browsing, and downloading Minecraft content such as **Mods**, **Skins**, **Worlds**, **Texture Packs**, **Add-ons**, and **Templates**.
+ELFox is a full-stack content management platform designed for Minecraft creators and communities. It provides a sleek, modern interface for uploading, organizing, browsing, and downloading Minecraft content such as **Mods**, **Skins**, **Worlds**, **Texture Packs**, **Add-ons**, and **Templates**.
 
 ### ✨ Key Features
 
@@ -25,6 +25,7 @@ MC-WebApp is a full-stack content management platform designed for Minecraft cre
 - **🎨 Theme Customization** — Choose from multiple accent colors for both admin and visitor dashboards
 - **📥 Download & Visit Tracking** — Track download counts and visit statistics per content
 - **💾 Storage Management** — Monitor storage usage with configurable limits (default: 1 TB)
+- **📄 Content Detail Pages** — Dedicated pages for each content with visit tracking and download links
 - **🔍 Search & Filter** — Search content by title and filter by category on the public homepage
 - **📱 Responsive Design** — Mobile-friendly layout with collapsible sidebar navigation
 
@@ -51,7 +52,7 @@ MC-WebApp is a full-stack content management platform designed for Minecraft cre
 ## 📁 Project Structure
 
 ```
-mc-webapp/
+elfox/
 ├── data/                        # SQLite database (auto-created)
 │   └── mc-content.db
 ├── public/
@@ -113,7 +114,7 @@ mc-webapp/
 
    ```bash
    git clone https://github.com/razaeldotexe/mc-webapp.git
-   cd mc-webapp
+   cd elfox
    ```
 
 2. **Install dependencies**
@@ -157,7 +158,7 @@ mc-webapp/
 
 ## 🗄️ Database
 
-MC-WebApp uses **SQLite** via `better-sqlite3` for zero-configuration, file-based data storage. The database is automatically created at `data/mc-content.db` on first run.
+ELFox uses **SQLite** via `better-sqlite3` for zero-configuration, file-based data storage. The database is automatically created at `data/mc-content.db` on first run.
 
 ### Tables
 
@@ -228,7 +229,7 @@ The admin panel is protected by session-based authentication:
 npm run build
 
 # Start with PM2
-npx pm2 start npm --name "mc-webapp" -- start
+npx pm2 start npm --name "elfox" -- start
 
 # Monitor
 npx pm2 monit
