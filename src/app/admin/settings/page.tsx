@@ -170,14 +170,7 @@ export default function SettingsPage() {
               Ubah nama, password, dan ikon akun administrator.
             </div>
 
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "20px",
-                marginTop: "16px",
-              }}
-            >
+            <div className="settings-grid-2">
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Nama Admin</label>
                 <input
@@ -298,14 +291,7 @@ export default function SettingsPage() {
               Atur warna aksen untuk dashboard admin dan visitor.
             </div>
 
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "24px",
-                marginTop: "16px",
-              }}
-            >
+            <div className="settings-grid-2-wide">
               {/* Admin Theme */}
               <div>
                 <label className="form-label">Warna Admin Dashboard</label>
