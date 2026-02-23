@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import MobileSidebarToggle from "@/components/MobileSidebarToggle";
+import ThemeApplier from "@/components/ThemeApplier";
 
 export default function AdminLayoutClient({
   children,
@@ -13,11 +14,22 @@ export default function AdminLayoutClient({
   const pathname = usePathname();
   const isLoginPage = pathname === "/admin/login";
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [adminTheme, setAdminTheme] = useState("");
 
   // Close sidebar on route change
   useEffect(() => {
     setIsSidebarOpen(false);
   }, [pathname]);
+
+  // Fetch admin theme color
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.admin_theme_color) setAdminTheme(d.admin_theme_color);
+      })
+      .catch(() => {});
+  }, []);
 
   if (isLoginPage) {
     return <>{children}</>;
@@ -25,6 +37,7 @@ export default function AdminLayoutClient({
 
   return (
     <div className={`app-layout ${isSidebarOpen ? "sidebar-open" : ""}`}>
+      {adminTheme && <ThemeApplier color={adminTheme} target="admin" />}
       {/* Mobile overlay */}
       {isSidebarOpen && (
         <div

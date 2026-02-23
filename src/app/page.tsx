@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import MobileSidebarToggle from "@/components/MobileSidebarToggle";
+import ThemeApplier from "@/components/ThemeApplier";
 import {
   Download,
   Search,
@@ -14,6 +15,7 @@ import {
   TrendingUp,
   Package,
   Eye,
+  Shield,
 } from "lucide-react";
 import { formatFileSize, CATEGORIES } from "@/lib/validation";
 
@@ -46,6 +48,7 @@ export default function PublicHomePage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [visitorTheme, setVisitorTheme] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -65,6 +68,16 @@ export default function PublicHomePage() {
       if (storageRes.ok) {
         setStats(await storageRes.json());
       }
+
+      // Fetch theme
+      try {
+        const themeRes = await fetch("/api/settings");
+        if (themeRes.ok) {
+          const themeData = await themeRes.json();
+          if (themeData.visitor_theme_color)
+            setVisitorTheme(themeData.visitor_theme_color);
+        }
+      } catch {}
     } catch (error) {
       console.error("Error loading data:", error);
     } finally {
@@ -89,6 +102,7 @@ export default function PublicHomePage() {
 
   return (
     <div className={`v-page ${isSidebarOpen ? "sidebar-open" : ""}`}>
+      {visitorTheme && <ThemeApplier color={visitorTheme} target="visitor" />}
       {isSidebarOpen && (
         <div
           className="mobile-sidebar-overlay"
@@ -137,6 +151,14 @@ export default function PublicHomePage() {
         </nav>
 
         <div className="v-sidebar-footer">
+          <Link
+            href="/admin"
+            className="v-nav-link"
+            style={{ color: "#94a3b8" }}
+          >
+            <Shield size={18} />
+            <span>Admin Panel</span>
+          </Link>
           <div className="v-sidebar-footer-text">
             Minecraft Content Platform
           </div>
@@ -170,9 +192,6 @@ export default function PublicHomePage() {
               </p>
             </div>
           </div>
-          <Link href="/admin" className="v-admin-link">
-            Admin Panel →
-          </Link>
         </div>
 
         {/* Stats Grid */}
