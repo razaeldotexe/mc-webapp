@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "MC Content — Minecraft Content Platform",
-  description: "Platform untuk download konten Minecraft: mods, skins, worlds, texture packs, dan lainnya.",
+  description:
+    "Platform untuk download konten Minecraft: mods, skins, worlds, texture packs, dan lainnya.",
 };
 
 export default function RootLayout({
