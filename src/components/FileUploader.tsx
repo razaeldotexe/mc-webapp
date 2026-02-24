@@ -84,8 +84,8 @@ export default function FileUploader() {
   };
 
   const handleUpload = async () => {
-    if (!file || !title.trim()) {
-      setError("File dan judul wajib diisi.");
+    if (!file || !title.trim() || !description.trim() || !thumbnail) {
+      setError("File, judul, deskripsi, dan thumbnail wajib diisi.");
       return;
     }
 
@@ -322,7 +322,7 @@ export default function FileUploader() {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Deskripsi</label>
+            <label className="form-label">Deskripsi *</label>
             <textarea
               className="form-textarea"
               value={description}
@@ -372,7 +372,7 @@ export default function FileUploader() {
 
           {/* Thumbnail */}
           <div className="form-group">
-            <label className="form-label">Thumbnail</label>
+            <label className="form-label">Thumbnail *</label>
             {thumbnailPreview ? (
               <div className="thumbnail-preview">
                 <img src={thumbnailPreview} alt="Preview" />
@@ -429,7 +429,9 @@ export default function FileUploader() {
             <button
               className="btn btn-primary"
               onClick={handleUpload}
-              disabled={uploading || !title.trim()}
+              disabled={
+                uploading || !title.trim() || !description.trim() || !thumbnail
+              }
             >
               {uploading ? "Mengupload..." : "Upload Konten"}
             </button>

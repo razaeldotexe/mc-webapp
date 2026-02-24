@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { saveChunk } from "@/lib/storage";
 
+// Allow large chunk uploads (5MB+)
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();

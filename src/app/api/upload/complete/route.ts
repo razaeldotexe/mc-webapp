@@ -19,9 +19,20 @@ export async function POST(request: Request) {
       (formData.get("supportedVersions") as string) || "";
     const minecraftType = (formData.get("minecraftType") as string) || "";
 
-    if (!uploadId || isNaN(totalChunks) || !originalFilename || !title) {
+    if (
+      !uploadId ||
+      isNaN(totalChunks) ||
+      !originalFilename ||
+      !title.trim() ||
+      !description.trim() ||
+      !thumbnail ||
+      thumbnail.size === 0
+    ) {
       return NextResponse.json(
-        { error: "uploadId, totalChunks, filename, and title are required" },
+        {
+          error:
+            "uploadId, totalChunks, filename, title, description, and thumbnail are required",
+        },
         { status: 400 },
       );
     }
