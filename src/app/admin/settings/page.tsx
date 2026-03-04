@@ -1,15 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Save,
-  CheckCircle,
-  User,
-  Palette,
-  Key,
-  Eye,
-  EyeOff,
-} from "lucide-react";
+import { Save, CheckCircle, User, Palette, Key } from "lucide-react";
 import StorageBar from "@/components/StorageBar";
 import { formatFileSize } from "@/lib/validation";
 
@@ -34,8 +26,6 @@ export default function SettingsPage() {
 
   // Admin account
   const [adminName, setAdminName] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [adminIcon, setAdminIcon] = useState("");
 
   // Theme
@@ -90,11 +80,6 @@ export default function SettingsPage() {
         visitor_theme_color: visitorTheme,
       };
 
-      // Only send password if user typed a new one
-      if (newPassword.trim()) {
-        payload.admin_password = newPassword.trim();
-      }
-
       const res = await fetch("/api/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -104,7 +89,6 @@ export default function SettingsPage() {
       if (res.ok) {
         setSaved(true);
         setStorageTotal(bytes);
-        setNewPassword("");
         setTimeout(() => setSaved(false), 3000);
       }
     } catch (err) {
@@ -180,37 +164,6 @@ export default function SettingsPage() {
                   onChange={(e) => setAdminName(e.target.value)}
                   placeholder="Username admin"
                 />
-              </div>
-              <div className="form-group" style={{ marginBottom: 0 }}>
-                <label className="form-label">Password Baru</label>
-                <div style={{ position: "relative" }}>
-                  <input
-                    className="form-input"
-                    type={showPassword ? "text" : "password"}
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Kosongkan jika tidak ingin ganti"
-                    style={{ paddingRight: "40px" }}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    style={{
-                      position: "absolute",
-                      right: "10px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      background: "none",
-                      border: "none",
-                      color: "var(--text-muted)",
-                      cursor: "pointer",
-                      display: "flex",
-                      padding: "4px",
-                    }}
-                  >
-                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
               </div>
             </div>
 

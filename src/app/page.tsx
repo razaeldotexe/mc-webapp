@@ -43,6 +43,9 @@ interface StorageData {
 
 export default function PublicHomePage() {
   const [contents, setContents] = useState<ContentItem[]>([]);
+  const [mfFolders, setMfFolders] = useState<any[]>([]);
+  const [mfFiles, setMfFiles] = useState<ContentItem[]>([]);
+  const [mfLoading, setMfLoading] = useState(false);
   const [stats, setStats] = useState<StorageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -57,9 +60,10 @@ export default function PublicHomePage() {
 
   const fetchData = async () => {
     try {
-      const [contentsRes, storageRes] = await Promise.all([
+      const [contentsRes, storageRes, mfFoldersRes] = await Promise.all([
         fetch("/api/contents"),
         fetch("/api/storage"),
+        fetch("/api/mediafire/folders"),
       ]);
       if (contentsRes.ok) {
         const data = await contentsRes.json();
@@ -67,6 +71,12 @@ export default function PublicHomePage() {
       }
       if (storageRes.ok) {
         setStats(await storageRes.json());
+      }
+      if (mfFoldersRes.ok) {
+        const mfData = await mfFoldersRes.json();
+        if (mfData.folders) {
+          setMfFolders(mfData.folders);
+        }
       }
 
       // Fetch theme
@@ -89,14 +99,49 @@ export default function PublicHomePage() {
     router.push(`/content/${id}`);
   };
 
-  const filtered = contents.filter((c) => {
-    const matchSearch =
-      !search ||
-      c.title.toLowerCase().includes(search.toLowerCase()) ||
-      c.description.toLowerCase().includes(search.toLowerCase());
-    const matchCategory = category === "all" || c.category === category;
-    return matchSearch && matchCategory;
-  });
+  useEffect(() => {
+    if (category.startsWith("mf-")) {
+      const folderKey = category.replace("mf-", "");
+      setMfLoading(true);
+      fetch(`/api/mediafire/files?folderKey=${folderKey}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.files && Array.isArray(data.files)) {
+            const mapped = data.files.map((f: any) => ({
+              id: f.quickkey,
+              title: f.filename,
+              description: f.description || "MediaFire File",
+              category: "mediafire",
+              file_path: "",
+              thumbnail_path: "",
+              file_size: parseInt(f.size) || 0,
+              extension: f.filename.split(".").pop() || "",
+              downloads: parseInt(f.downloads) || 0,
+              visits: parseInt(f.views) || 0,
+              created_at: f.created || new Date().toISOString(),
+              isMediaFire: true,
+            }));
+            setMfFiles(mapped);
+          }
+        })
+        .catch(console.error)
+        .finally(() => setMfLoading(false));
+    }
+  }, [category]);
+
+  const filtered = (category.startsWith("mf-") ? mfFiles : contents).filter(
+    (c) => {
+      const matchSearch =
+        !search ||
+        c.title.toLowerCase().includes(search.toLowerCase()) ||
+        c.description.toLowerCase().includes(search.toLowerCase());
+      const matchCategory =
+        category === "all" ||
+        category.startsWith("mf-") ||
+        c.category === category;
+      return matchSearch && matchCategory;
+    },
+  );
 
   const totalDownloadSize = contents.reduce((sum, c) => sum + c.file_size, 0);
 
@@ -148,6 +193,24 @@ export default function PublicHomePage() {
               </button>
             );
           })}
+
+          {mfFolders.length > 0 && (
+            <>
+              <span className="v-sidebar-section" style={{ marginTop: "16px" }}>
+                By MediaFire
+              </span>
+              {mfFolders.map((folder) => (
+                <button
+                  key={folder.folderkey}
+                  className={`v-nav-link ${category === `mf-${folder.folderkey}` ? "active" : ""}`}
+                  onClick={() => setCategory(`mf-${folder.folderkey}`)}
+                >
+                  <FolderOpen size={18} />
+                  <span>{folder.name}</span>
+                </button>
+              ))}
+            </>
+          )}
         </nav>
 
         <div className="v-sidebar-footer">
@@ -268,7 +331,7 @@ export default function PublicHomePage() {
         </div>
 
         {/* Content Grid */}
-        {loading ? (
+        {loading || mfLoading ? (
           <div className="v-loading">
             <div className="v-loading-spinner" />
             <span>Memuat konten...</span>
@@ -281,9 +344,13 @@ export default function PublicHomePage() {
                 className="v-card"
                 style={{
                   animationDelay: `${index * 0.05}s`,
-                  cursor: "pointer",
+                  cursor: (content as any).isMediaFire ? "default" : "pointer",
                 }}
-                onClick={() => handleCardClick(content.id)}
+                onClick={() => {
+                  if (!(content as any).isMediaFire) {
+                    handleCardClick(content.id);
+                  }
+                }}
               >
                 {content.thumbnail_path ? (
                   <img
@@ -359,7 +426,11 @@ export default function PublicHomePage() {
                       </span>
                     </div>
                     <a
-                      href={`/api/download/${content.id}`}
+                      href={
+                        (content as any).isMediaFire
+                          ? `/api/mediafire/link?quickKey=${content.id}`
+                          : `/api/download/${content.id}`
+                      }
                       className="v-download-btn"
                       onClick={(e) => {
                         // Prevent the click from navigating if the card itself was clickable

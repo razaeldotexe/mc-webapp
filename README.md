@@ -20,7 +20,8 @@ ELFox is a full-stack content management platform designed for Minecraft creator
 - **📤 Chunked File Upload** — Supports large files up to **5 GB** with chunked upload for reliability
 - **🖼️ Thumbnail Support** — Attach custom thumbnails (JPG, PNG, WebP) to each content entry
 - **📊 Admin Dashboard** — Analytics overview with storage usage, content count, category breakdown, and pie charts
-- **🔐 Authentication** — Secure admin login with session-based authentication and middleware-protected routes
+- **🔐 Authentication** — Secure and robust admin authentication powered by **Supabase Auth**
+- **🔥 MediaFire Integration** — Seamlessly bypass MediaFire APIs to directly display your public MediaFire folders as download categories
 - **⚙️ Admin Settings** — Change admin username, password, icon, and customize theme colors
 - **🎨 Theme Customization** — Choose from multiple accent colors for both admin and visitor dashboards
 - **📥 Download & Visit Tracking** — Track download counts and visit statistics per content
@@ -123,25 +124,37 @@ elfox/
    npm install
    ```
 
-3. **Run the development server**
+3. **Configure Environment Variables**
+
+   Rename or copy `.env.example` to `.env` and fill in your Supabase and MediaFire details:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   **Required variables in `.env`:**
+   - `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anon key
+   - `MEDIAFIRE_ROOT_FOLDER_KEY`: The public folder key of your MediaFire directory
+
+4. **Run the development server**
 
    ```bash
    npm run dev
    ```
 
-4. **Open in browser**
+5. **Open in browser**
 
    Navigate to [http://localhost:3000](http://localhost:3000)
 
-### Default Admin Credentials
+### Default Admin Setup
 
-| Field    | Value      |
-| -------- | ---------- |
-| Username | `razael`   |
-| Password | `admin123` |
+Since authentication is handled via **Supabase**, you must create your first Admin user directly from the Supabase Dashboard (`Authentication -> Users -> Add User`).
+
+Use the email and password you created there to log into the `/admin` portal.
 
 > [!CAUTION]
-> Change the default admin credentials immediately after first login via **Admin Settings** (`/admin/settings`).
+> Do not share your Supabase Keys publicly. Ensure your `.env` is listed in your `.gitignore`.
 
 ---
 
@@ -208,15 +221,14 @@ The database runs in **WAL mode** for improved concurrent read performance. Sche
 
 ## 🔒 Authentication
 
-The admin panel is protected by session-based authentication:
+The admin panel is securely protected by **Supabase Auth**:
 
-- **Middleware** intercepts all `/admin/*` routes (except `/admin/login`)
-- Sessions are stored **in-memory** with a **24-hour** expiration
-- Passwords are hashed using **SHA-256**
-- Admin credentials can be updated via the Settings page
+- **Middleware** intercepts all `/admin/*` routes (except `/admin/login`) and checks for a valid Supabase session.
+- Passwords and user sessions are fully managed by Supabase, eliminating the need for local SQLite auth.
+- The `lib/supabase` utility seamlessly integrates the SSR module with Next.js App Router cookies.
 
 > [!NOTE]
-> Sessions are stored in memory and will be cleared on server restart. Users will need to log in again after a restart.
+> Make sure your Supabase project is active, otherwise you will be locked out of the Admin Panel.
 
 ---
 

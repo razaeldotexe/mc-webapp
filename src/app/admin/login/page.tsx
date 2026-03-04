@@ -9,7 +9,7 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect") || "/admin";
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -21,16 +21,17 @@ function LoginForm() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+      // Create supabase client dynamically
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Login gagal");
+      if (signInError) {
+        setError(signInError.message || "Login gagal");
         return;
       }
 
@@ -65,15 +66,15 @@ function LoginForm() {
 
         <form onSubmit={handleLogin} className="login-form">
           <div className="login-field">
-            <label className="login-label">Username</label>
+            <label className="login-label">Email</label>
             <div className="login-input-wrapper">
               <User size={18} className="login-input-icon" />
               <input
                 className="login-input"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Masukkan username"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Masukkan email"
                 autoFocus
                 required
               />

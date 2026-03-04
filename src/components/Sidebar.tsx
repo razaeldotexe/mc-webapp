@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -22,10 +24,25 @@ const navItems = [
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const [adminIcon, setAdminIcon] = useState("");
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.admin_icon) {
+          setAdminIcon(data.admin_icon);
+        }
+      })
+      .catch((err) => console.error("Failed to load admin icon:", err));
+  }, []);
 
   const handleLogout = async () => {
     try {
-      await fetch("/api/auth/logout", { method: "POST" });
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+      await supabase.auth.signOut();
+
       router.push("/admin/login");
       router.refresh();
     } catch (err) {
@@ -87,7 +104,36 @@ export default function Sidebar() {
             fontFamily: "inherit",
           }}
         >
-          <LogOut className="nav-icon" size={20} />
+          {adminIcon ? (
+            <div
+              style={{
+                width: "20px",
+                height: "20px",
+                borderRadius: "4px",
+                overflow: "hidden",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+              className="nav-icon"
+            >
+              {adminIcon.startsWith("http") ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={adminIcon}
+                  alt="Admin"
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                <span style={{ fontSize: "14px", lineHeight: 1 }}>
+                  {adminIcon}
+                </span>
+              )}
+            </div>
+          ) : (
+            <LogOut className="nav-icon" size={20} />
+          )}
           <span>Logout</span>
         </button>
       </div>

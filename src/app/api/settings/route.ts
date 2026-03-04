@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getSetting, setSetting } from "@/lib/db";
-import { updateAdminPassword, updateAdminUsername } from "@/lib/auth";
 
 export async function GET() {
   try {
@@ -35,11 +34,7 @@ export async function PUT(request: Request) {
     }
 
     if (body.admin_name !== undefined && body.admin_name.trim()) {
-      updateAdminUsername(body.admin_name.trim());
-    }
-
-    if (body.admin_password !== undefined && body.admin_password.trim()) {
-      updateAdminPassword(body.admin_password.trim());
+      setSetting("admin_username", body.admin_name.trim());
     }
 
     if (body.admin_icon !== undefined) {
